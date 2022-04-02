@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID}) {
+function EditDriverOnList({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID}) {
     const [driver, setDriver] = useState({
         driver1: {
             firstName: '',
@@ -35,7 +35,6 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
         fetch('http://localhost:4000/drivers/'+ driverID)
         .then((res) => res.json())
         .then((resJson) => {
-            console.log(resJson);
             setDriver(resJson)
         })
         .catch(error => console.error({'Error': error}))
@@ -93,12 +92,10 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
     }
 
     const handleChangeDriver1 = (event) => {
-        console.log(driver);
         setDriver({ ...driver, driver1: {...driver.driver1, [event.target.name]:event.target.value}})
     }
 
     const handleChangeDriver2 = (event) => {
-        console.log(driver);
         setDriver({ ...driver, driver2: {...driver.driver2, [event.target.name]:event.target.value}})
     }
 
@@ -112,7 +109,7 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
     <Modal show={editWindow} onHide={closeEditWindow}>
     <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title id="order-food">New Driver</Modal.Title>
+          <Modal.Title id="order-food">Edit Driver</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <div className='row'>          
@@ -121,7 +118,7 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
                   <Form.Control className='mb-2' type="text" name='firstName' placeholder="First Name" onChange={handleChangeDriver1} value={driver.driver1.firstName} required />
                   <Form.Control className='mb-2' type="text" name='lastName' placeholder="Last Name" onChange={handleChangeDriver1} value={driver.driver1.lastName}  required />
                   <Form.Control className='mb-2' type="number" name='phoneNumber' placeholder="Phone Number" onChange={handleChangeDriver1} value={driver.driver1.phoneNumber}  required />
-                  <Form.Control className='mb-2' type="text" name='homeAddress' placeholder="Home Address" onChange={handleChangeDriver1} value={driver.driver1.homeAddress} required />
+                  {/* <Form.Control className='mb-2' type="text" name='homeAddress' placeholder="Home Address" onChange={handleChangeDriver1} value={driver.driver1.homeAddress} required /> */}
               </Form.Group>
 
               <Form.Group className="col mb-3" controlId="formBasicLastName">
@@ -129,7 +126,7 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
                   <Form.Control className='mb-2' type="text" name='driver2FirstName' placeholder="First Name" onChange={handleChangeDriver2} value={driver.driver2.firstName} />
                   <Form.Control className='mb-2' type="text" name='driver2LastName' placeholder="Last Name" onChange={handleChangeDriver2} value={driver.driver2.lastName}  />
                   <Form.Control className='mb-2' type="number" name='driver2PhoneNumber' placeholder="Phone Number" onChange={handleChangeDriver2} value={driver.driver2.phoneNumber}  />
-                  <Form.Control className='mb-2' type="text" name='driver2HomeAddress' placeholder="Home Address" onChange={handleChangeDriver2} value={driver.driver2.homeAddress}  />
+                  {/* <Form.Control className='mb-2' type="text" name='driver2HomeAddress' placeholder="Home Address" onChange={handleChangeDriver2} value={driver.driver2.homeAddress}  /> */}
               </Form.Group>
           </div>
 
@@ -137,7 +134,7 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
             <Form.Label>Current location</Form.Label>
             <Form.Control className='mb-2' type="text" name='currentLocation' placeholder="City State, Zipcode" onChange={handleChange} value={driver.currentLocation}  />
           </Form.Group>
-          <div className='row'>
+          {/* <div className='row'>
               <Form.Group className="col mb-3" controlId="formBasicTruckNumber">
               <Form.Label>Truck Number</Form.Label>
               <Form.Control type="number" name='truckNumber' placeholder="Enter a Truck Number" onChange={handleChange} value={driver.truckNumber}  required />
@@ -146,7 +143,7 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
               <Form.Label>Trailer Number</Form.Label>
               <Form.Control type="number" name='trailerNumber' placeholder="Enter a Trailer Number" onChange={handleChange} value={driver.trailerNumber}  required />
               </Form.Group>
-          </div>
+          </div> */}
 
                   {/* Status / Type ------------------- */}
                   <div className='row'>
@@ -190,4 +187,4 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
   )
 }
 
-export default EditDriver
+export default EditDriverOnList

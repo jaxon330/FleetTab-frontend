@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button'
 import '../../css/styles.css'
 
 
-function AddALoad(
+function CreateNewLoad(
     {
       addALoadForm,
        closeAddALoadForm,
@@ -27,7 +27,7 @@ function AddALoad(
       const [extraStop, setExtraStop] = useState([{stop:'', date:''}])
       const [pickupInfo, setPickupInfo] = useState({pickLocation:'', pickDate: ''})
       const [newLoad, setNewLoad] = useState({
-        driverInfo: truckInfo && truckInfo._id,
+        driverInfo: truckInfo?truckInfo._id:null,
         invoiceNumber: '',
         loadNumber: '',
         companyName: '',
@@ -68,6 +68,7 @@ function AddALoad(
             'Content-Type': 'application/json'
           }
         })
+        // if(truckInfo){
         let changeDriverStatus = await fetch('http://localhost:4000/drivers/edit/'+ truckInfo._id, {
             method: 'PUT',
             body: JSON.stringify({
@@ -94,12 +95,6 @@ function AddALoad(
                 'Content-Type': 'application/json'
             }
         })
-       
-
-        let createdLoad = await response.json()
-
-        addLoad(createdLoad)
-       
 
         let updatedDriver = await changeDriverStatus.json()
         if (updatedDriver) {
@@ -112,24 +107,13 @@ function AddALoad(
             setDrivers(data)
 
         }
+       
+      // }
+        let createdLoad = await response.json()
+        addLoad(createdLoad)
+        setNewLoad('')
+
         closeAddALoadForm()
-        // setNewLoad({
-        //   driverInfo: truckInfo?truckInfo._id:null,
-        //   invoiceNumber: '',
-        //   loadNumber: '',
-        //   companyName: '',
-        //   rate: '',
-        //   emptyMilage: '',
-        //   loadedMilage: '',
-        //   comment: '',
-        //   loadStatus: '',
-        //   rateConfirmation: '',
-        //   proofeOfDelivery: '',
-        //   pickup: pickupInfo,
-        //   stops: extraStop
-        // })
-        // setPickupInfo({stop:'', date:''})
-        // setPickupInfo({pickLocation:'', pickDate: ''})
       }
   
 
@@ -168,54 +152,6 @@ function AddALoad(
             <Modal.Title id="order-food">New Order</Modal.Title>
           </Modal.Header>
           <Modal.Body >
-
-          {/* Driver / Current Location */}
-            <div className='row'>
-
-              {/* <Form.Group className='mb-3 col'>
-              <Form.Label>Driver</Form.Label>
-              
-                <Form.Select aria-label="Default select example" name='driver' onChange={handleChange} value={newLoad.driver}>
-                  <option value={null}>Select a Driver</option>
-                  {drivers.map((driver, index) => {
-                    if(driver.truckNumber === truckInfo?truckInfo.truckNumber:'null' ) 
-                    return (
-                      <option key={driver._id} value={driver._id}>{driver.driver1.firstName} {driver.driver1.lastName}</option>
-                    )
-                  })}
-                </Form.Select>
-              </Form.Group>
-
-              <Form.Group className="mb-3 col" controlId="formBasicLocation">
-                <Form.Label>Current Location</Form.Label>
-                <Form.Control type="text" name='location' placeholder="Enter Current Location" onChange={handleChange} value={newLoad.location}    required />
-              </Form.Group> */}
-            </div>
-
-        {/* Status / Type ------------------- */}
-            <div className='row'>
-              {/* <Form.Group className='col mb-3'>  
-              <Form.Label className=''>Status</Form.Label>
-                <Form.Select className='' aria-label="Default select example" name='driverStatus' onChange={handleChange} value={newLoad.driverStatus} required>
-                <option value={null}>Select a Status</option>
-                  {status.map((sts, index) => (
-                    <option key={index} value={sts}>{sts}</option>
-                  ))}
-                  
-                </Form.Select>
-              </Form.Group>
-
-              <Form.Group className='col mb-3'>  
-              <Form.Label >Type</Form.Label>
-                <Form.Select  name='type' onChange={handleChange} value={newLoad.type} required>
-                <option value={null}>Select Type</option>
-                  {fleetType.map((type, index) => (
-                    <option key={index} value={type}>{type}</option>
-                  ))}
-
-                </Form.Select>
-              </Form.Group> */}
-            </div>
 
             <div className='row mb-3'>
               <h4>Driver: {truckInfo?`${truckInfo.driver1.firstName} ${truckInfo.driver1.lastName}`:'null'}</h4>
@@ -310,4 +246,4 @@ function AddALoad(
   )
 }
 
-export default AddALoad
+export default CreateNewLoad

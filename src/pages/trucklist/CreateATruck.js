@@ -50,7 +50,6 @@ function CreateATruck(
             }
         })
         let createTruck = await responce.json()
-        console.log(createTruck);
         addATruck(createTruck)
         closeCreateTruckForm()
 

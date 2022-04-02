@@ -9,11 +9,11 @@ import Button from 'react-bootstrap/Button'
 import '../../css/styles.css'
 
 
-function AddALoad(
+function EditLoad(
     {
-      addALoadForm,
-       closeAddALoadForm,
-        showAddALoadForm, 
+      editLoadForm,
+       closeEditLoadForm,
+        showEditLoadForm, 
         truckInfo,
          drivers,
           loads, 
@@ -27,7 +27,7 @@ function AddALoad(
       const [extraStop, setExtraStop] = useState([{stop:'', date:''}])
       const [pickupInfo, setPickupInfo] = useState({pickLocation:'', pickDate: ''})
       const [newLoad, setNewLoad] = useState({
-        driverInfo: truckInfo && truckInfo._id,
+        driverInfo: truckInfo?truckInfo._id:null,
         invoiceNumber: '',
         loadNumber: '',
         companyName: '',
@@ -68,6 +68,7 @@ function AddALoad(
             'Content-Type': 'application/json'
           }
         })
+        // if(truckInfo){
         let changeDriverStatus = await fetch('http://localhost:4000/drivers/edit/'+ truckInfo._id, {
             method: 'PUT',
             body: JSON.stringify({
@@ -94,12 +95,6 @@ function AddALoad(
                 'Content-Type': 'application/json'
             }
         })
-       
-
-        let createdLoad = await response.json()
-
-        addLoad(createdLoad)
-       
 
         let updatedDriver = await changeDriverStatus.json()
         if (updatedDriver) {
@@ -112,24 +107,13 @@ function AddALoad(
             setDrivers(data)
 
         }
-        closeAddALoadForm()
-        // setNewLoad({
-        //   driverInfo: truckInfo?truckInfo._id:null,
-        //   invoiceNumber: '',
-        //   loadNumber: '',
-        //   companyName: '',
-        //   rate: '',
-        //   emptyMilage: '',
-        //   loadedMilage: '',
-        //   comment: '',
-        //   loadStatus: '',
-        //   rateConfirmation: '',
-        //   proofeOfDelivery: '',
-        //   pickup: pickupInfo,
-        //   stops: extraStop
-        // })
-        // setPickupInfo({stop:'', date:''})
-        // setPickupInfo({pickLocation:'', pickDate: ''})
+       
+      // }
+        let createdLoad = await response.json()
+        addLoad(createdLoad)
+        setNewLoad('')
+
+        closeEditLoadForm()
       }
   
 
@@ -162,7 +146,7 @@ function AddALoad(
   return (
     <>
 
-      <Modal show={addALoadForm} onHide={closeAddALoadForm} >
+      <Modal show={editLoadForm} onHide={closeEditLoadForm} >
       <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
             <Modal.Title id="order-food">New Order</Modal.Title>
@@ -172,7 +156,7 @@ function AddALoad(
           {/* Driver / Current Location */}
             <div className='row'>
 
-              {/* <Form.Group className='mb-3 col'>
+              <Form.Group className='mb-3 col'>
               <Form.Label>Driver</Form.Label>
               
                 <Form.Select aria-label="Default select example" name='driver' onChange={handleChange} value={newLoad.driver}>
@@ -189,7 +173,7 @@ function AddALoad(
               <Form.Group className="mb-3 col" controlId="formBasicLocation">
                 <Form.Label>Current Location</Form.Label>
                 <Form.Control type="text" name='location' placeholder="Enter Current Location" onChange={handleChange} value={newLoad.location}    required />
-              </Form.Group> */}
+              </Form.Group>
             </div>
 
         {/* Status / Type ------------------- */}
@@ -297,7 +281,7 @@ function AddALoad(
           <Button variant="primary" onClick={handleExtraStop}>
               Add a Stop
             </Button>
-            <Button variant="secondary" onClick={closeAddALoadForm}>
+            <Button variant="secondary" onClick={closeEditLoadForm}>
               Close
             </Button>
             <Button variant="primary" type="submit">
@@ -310,4 +294,4 @@ function AddALoad(
   )
 }
 
-export default AddALoad
+export default EditLoad

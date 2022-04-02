@@ -6,10 +6,13 @@ import Button from 'react-bootstrap/Button'
 import CreateATruck from './trucklist/CreateATruck'
 import ShowDetails from './trucklist/ShowDetails'
 import AddALoad from './trucklist/AddAload'
+import EditDriverOnList from './trucklist/EditDriverOnList'
+import SidebarMenu from '../sidebarMenu/SidebarMenu'
+import EditLoad from './trucklist/EditLoad'
 
 function TruckList(
     {
-        addATruck, trucklist, setTrucklist, drivers, loads, setLoads, addLoad
+        addATruck, trucklist, setTrucklist, drivers, loads, setLoads, addLoad, setDrivers, setUsers
     }) {
      
     // Current date for header
@@ -20,23 +23,49 @@ function TruckList(
 
     const [truckID, setTruckID] = useState()
 
-    let getTruckList = async () => {
-        let trucklistData = await fetch('http://localhost:4000')
-        let json = await trucklistData.json()
+    const [loadID, setLoadID] = useState()
+
+
+    let getLoads = async () => {
+        let loadsData = await fetch('http://localhost:4000/loads')
+        let json = await loadsData.json()
         if (json) {
-          setTrucklist(json)
+            setLoads(json)
         }
       }
   
       useEffect(() => {
-        getTruckList()
+        getLoads()
       }, [])
 
-    let getTruckInfo = (truck) => {
-        setTruckInfo(truck)
+    let getTruckInfo = (...truck) => {
+        setTruckInfo(truck[0])
+        setTruckID(truck[1])
+        loads.map((load) => {
+            if(truck[1] === load._id) {
+                setLoadID(load) 
+            } if(truck[1] !== load._id) {
+                setLoadID('')
+            }
+
+            return loadID
+        })
+
+ 
     }
 
-    console.log(truckID)
+    let getDriverID = (data) => {
+        setTruckInfo(data)
+        showAddALoadForm()
+    }
+
+    // get load id
+    let getLoadInfo = (info) => {
+        setLoadID(info)
+        setTruckInfo('')
+    }
+
+    console.log('loadID => ' + loadID)
     // Add a Truck modal window
     const [createTruckForm, setCreateTruckForm] = useState(false)
     const showCreateTruckForm = () => setCreateTruckForm(true)
@@ -47,16 +76,97 @@ function TruckList(
     const showAddALoadForm = () => setAddALoadForm(true)
     const closeAddALoadForm = () => setAddALoadForm(false)
 
+    // Edit a driver modal window
+    const [editWindow, setEditWindow] = useState(false)
+    const closeEditWindow = () => setEditWindow(false);
+    const showEditWindow = () => setEditWindow(true)
 
-    let getTruckID = (truck) => {
-        setTruckID(truck)
-        showAddALoadForm()
+    const [editLoadForm, setEditLoadForm] = useState(false)
+    const closeEditLoadForm = () => setEditLoadForm(false)
+    const showEditLoadForm = () => setEditLoadForm(true)
 
+    // ? and : - is ternary operator
+   
+    function lastDelivery(truckNumber) {    
+        let deliveryAddress= ''                                            
+        if(loads) {
+            loads.map((load) => {
+                if(load.driverInfo && load.driverInfo.truckNumber === truckNumber){
+                    let [lastStop] = load.stops.slice(-1)
+                     deliveryAddress= lastStop.stop
+                    
+                } else return 'null'
+
+                return deliveryAddress;
+            })
+
+        } else return 'null'
+        return deliveryAddress;
     }
+
+       
+    function lastDeliveryDate(truckNumber) {    
+        let deliveryDate= ''                                            
+        if(loads) {
+            loads.map((load) => {
+                if(load.driverInfo && load.driverInfo.truckNumber === truckNumber){
+                    let [lastStop] = load.stops.slice(-1)
+                    deliveryDate= new Date(lastStop.date).toLocaleDateString('us-US',{hour: 'numeric', minute: 'numeric'})
+                    
+                } else return 'null'
+
+                return deliveryDate;
+            })
+
+        } else return 'null'
+        return deliveryDate;
+    }
+
+    function currentLoadNumber(truckNumber) {    
+        let loadNumber= ''                                            
+        if(loads) {
+            loads.map((load) => {
+                if(load.driverInfo && load.driverInfo.truckNumber === truckNumber){
+                    loadNumber = load.loadNumber
+                   
+                    
+                } else return 'null'
+
+                return loadNumber;
+            })
+
+        } else return 'null'
+        return loadNumber;
+    }
+
+    // let getLoadId = (truck) => {
+    //     setTruckInfo(truck)
+    //     showAddALoadForm()
+
+    // }
+
+    function getLoadId(truckNumber) {    
+        let loadId= ''                                            
+        if(loads) {
+            loads.map((load) => {
+                if(load.driverInfo.truckNumber === truckNumber){
+                    loadId = load._id
+                    
+                } else return 'null'
+
+                return loadId;
+            })
+
+        } else return 'null'
+        return loadId;
+    }
+
+
 
  
   return (
     <div className='mx-0'>
+        
         <CreateATruck 
             createTruckForm={createTruckForm} 
             showCreateTruckForm={showCreateTruckForm} 
@@ -64,7 +174,7 @@ function TruckList(
             addATruck={addATruck}
             drivers={drivers}
         />
-
+        {truckInfo === undefined ? null :
         <AddALoad 
             addALoadForm={addALoadForm} 
             showAddALoadForm={showAddALoadForm} 
@@ -75,55 +185,52 @@ function TruckList(
             setLoads={setLoads}
             addLoad={addLoad}
             truckInfo={truckInfo}
+            setDrivers={setDrivers}
         />
+    }
+        {truckID === undefined ? null :
+        <EditDriverOnList 
+                editWindow={editWindow}
+                setEditWindow={setEditWindow}
+                closeEditWindow={closeEditWindow}
+            //  showEditWindow={showEditWindow}
+                driverID={truckID}
+                setDrivers={setDrivers}
+                drivers={drivers}
+            />
+        }
 
+        <EditLoad 
+            editLoadForm={editLoadForm} 
+            showEditLoadForm={showEditLoadForm} 
+            closeEditLoadForm={closeEditLoadForm}
+            addATruck={addATruck}
+            drivers={drivers}
+            loads={loads}
+            setLoads={setLoads}
+            addLoad={addLoad}
+            truckInfo={truckInfo}
+            setDrivers={setDrivers} 
+        />
+        <div className='mx-0'>
+            <SidebarMenu setUsers={setUsers} />
+        </div>
         
-        {trucklist?(
-        <div className='mx-0 px-0 row'>
-            <div>
+        {loads?(
+        <div className='mx-5 row'>
+          
+            
+            <div style={{marginLeft: '15px'}}>
                 <h1 className='todayDate'>{dateToday.toLocaleDateString('en-US', {weekday: 'long', month: 'long', day: '2-digit', year: 'numeric'})}</h1>
             </div>
 
             <div className='col d-inline'>
-            <section className='coveredTrucks'>
-                <div className='mx-0' style={{backgroundColor: 'orange'}}>
-                    <h3 className='d-inline mx-4'>Covered Trucks</h3>
-                    <button onClick={showCreateTruckForm}>Add a Truck</button>
-                </div>
-                <Table  bordered hover>
-                    <thead>
-                        <tr>
-                        <th>Load#</th>
-                        <th>Truck#</th>
-                        <th>Driver</th>
-                        <th>Status</th>
-                        <th>Type</th>
-                        <th>Current Location</th>
-                        <th>Final Stop</th>
-                        <th>Delivery Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td colSpan={2} >
-                            <button variant="outline-primary" className='mx-4'>Add Load</button>
-                            <button variant="outline-success">Delivered</button>
-                        </td>
-                        
-                        </tr>
-                    </tbody>
-                </Table >
-            </section>
 
-            {/* Ready Trucks */}
-            <section className='coveredTrucks'>
+            {/* Loads */}
+            <section className='coveredTrucks' style={{marginLeft: '15px'}}>
                 <div className='mx-0' style={{backgroundColor: 'red'}}>
-                    <h3 className='d-inline mx-4'>Ready Trucks</h3>
-                    <button onClick={showCreateTruckForm} >Add a Truck</button>
+                    <h3 className='d-inline mx-4'>Loads</h3>
+                    <button onClick={() => getDriverID('')} >Add a Truck</button>
                 </div>
                 <Table  bordered hover >
                     <thead>
@@ -131,103 +238,78 @@ function TruckList(
                         <th>Load#</th>
                         <th>Truck#</th>
                         <th>Driver</th>
-                        <th>Status</th>
-                        <th>Type</th>
                         <th>Current Location</th>
-                        <th>Final Stop</th>
-                        <th>Delivery Date</th>
+                        <th>Origin</th>
+                        <th>Pickup</th>
+                        <th>Destination</th>
+                        <th>Delivery</th>
+                        <th>Note</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {trucklist.map((truck, index) => {
-                            // const deliveryDate = new Date(truck.order.stops[1].date)
-                            // const deliveryAddress = truck.order.stops[1].stop
-                            if (truck.driverStatus === 'Ready') {
+                        {loads.map((load, index) => {
+                            const [lastStop] = load.stops.slice(-1)
+                            const deliveryDate = new Date(lastStop.date)
+                            const deliveryAddress = lastStop.stop   
+                            const pickupDate = new Date(load.pickup.pickDate)  
                                 return ( 
-                                    <tr key={truck._id} onClick={() => getTruckInfo(truck)}>
-                                    <td>{index}</td>
-                                    <td>{truck.driver ? truck.driver.truckNumber : ''}</td>
-                                    <td>{truck.driver ? truck.driver.firstName : ''}</td>
-                                    <td>{truck.driverStatus}</td>
-                                    <td>{truck.type}</td>
-                                    <td>{truck.location}</td>
-                                    <td>
-                                        {/* {truck.order ? deliveryAddress : null} */}
-                                        </td>
-                                    <td>
-                                        {/* {truck.order ? deliveryDate.toLocaleDateString() : null} */}
-                                        </td>
+                                    <tr key={load._id} onClick={() => getLoadInfo(load)} style={load.driverInfo === null?{backgroundColor: '#D3D3D3'}:null}>
+                                    <td>{load.loadNumber}</td>
+                                    <td>{load.driverInfo ? load.driverInfo.truckNumber : ''}</td>
+                                    <td>{load.driverInfo ? load.driverInfo.driver1.firstName + ' '+ load.driverInfo.driver1.lastName : ''}</td>
+                                    <td>{load.driverInfo?load.driverInfo.currentLocation:''}</td>
+                                    <td>{load.pickup.pickLocation}</td>
+                                    <td>{pickupDate.toLocaleDateString('us-US',{hour: 'numeric', minute: 'numeric'})}</td>
+                                    <td>{deliveryAddress}</td>
+                                    <td>{deliveryDate.toLocaleDateString('us-US',{hour: 'numeric', minute: 'numeric'})}</td>  
+                                    <td>{load.comment}</td>  
                                     <td colSpan={2} >
-                                        <button variant="outline-primary" className='mx-4' id={truck._id} onClick={showAddALoadForm}>Add Load</button>
+                                        <button variant="outline-primary" className='mx-4' id={load._id} onClick={showEditLoadForm}>Edit Order</button>
                                         <button variant="outline-success">Delivered</button>
-                                    </td>
-                                    
+                                    </td>                                  
                                     </tr>
                                )
-                            } 
-                            // else {
-                            //     return (
-                            //         <tr>
-                            //         <td>1</td>
-                            //         <td>Mark</td>
-                            //         <td>Otto</td>
-                            //         <td>@mdo</td>
-                            //         <td colSpan={2} >
-                            //             <button variant="outline-primary" className='mx-4'>Add Load</button>
-                            //             <button variant="outline-success">Delivered</button>
-                            //         </td>
-                                    
-                            //         </tr>
-                            //     )
-
-                            // }
                         })}
+
+                        {loads.map((load, index) => {
+                            const [lastStop] = load.stops.slice(-1)
+                            const deliveryDate = new Date(lastStop.date)
+                            const deliveryAddress = lastStop.stop 
+                            const pickupDate = new Date(load.pickup.pickDate)
+                            if(load.driverInfo === '') { 
+                                return ( 
+                                    <tr key={load._id} onClick={() => getLoadInfo(load)} style={{backgroundColor: '#D3D3D3'}}>
+                                    <td>{load.loadNumber}</td>
+                                    <td>{load.driverInfo ? load.driverInfo.truckNumber : ''}</td>
+                                    <td>{load.driverInfo ? load.driverInfo.driver1.firstName + ' '+ load.driverInfo.driver1.lastName : ''}</td>
+                                    <td>{load.driverInfo.currentLocation}</td>
+                                    <td>{load.pickup.pickLocation}</td>
+                                    <td>{pickupDate.toLocaleDateString('us-US',{hour: 'numeric', minute: 'numeric'})}</td>
+                                    <td>{deliveryAddress}</td>
+                                    <td>{deliveryDate.toLocaleDateString('us-US',{hour: 'numeric', minute: 'numeric'})}</td>  
+                                    <td>{load.comment}</td>  
+                                    <td colSpan={2} >
+                                        <button variant="outline-primary" className='mx-4' id={load._id} onClick={showEditLoadForm}>Edit Order</button>
+                                        <button variant="outline-success">Delivered</button>
+                                    </td>                                  
+                                    </tr>
+                               )
+                            }   
+                        })}
+
+                        
                     </tbody>
                 </Table>
             </section>
 
             {/* In Transit */}
-            <section className='coveredTrucks'>
+            
+            <section className='coveredTrucks' style={{marginLeft: '15px'}}>
                 <div className='mx-0' style={{backgroundColor: 'green'}}>
-                    <h3 className='d-inline mx-4'>In Transit</h3>
-                    <button onClick={showCreateTruckForm} >Add a Truck</button>
-                </div>
-                <Table  bordered hover>
-                    <thead>
-                        <tr>
-                        <th>Load#</th>
-                        <th>Truck#</th>
-                        <th>Driver</th>
-                        <th>Status</th>
-                        <th>Type</th>
-                        <th>Current Location</th>
-                        <th>Final Stop</th>
-                        <th>Delivery Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td colSpan={2} >
-                            <button variant="outline-primary" className='mx-4'>Add Load</button>
-                            <button variant="outline-success">Delivered</button>
-                        </td>
-                        
-                        </tr>
-                    </tbody>
-                </Table>
-            </section>
+                    <h3 className='d-inline mx-4'>Drivers</h3>
 
-            {/* Off Duty */}
-            <section className='coveredTrucks'>
-                <div className='mx-0' style={{backgroundColor: 'darksalmon'}}>
-                    <h3 className='d-inline mx-4'>Off Duty</h3>
-                    <button onClick={showCreateTruckForm} >Add a Truck</button>
                 </div>
-                <Table  bordered hover>
+                <Table  striped bordered hover>
                     <thead>
                         <tr>
                         <th>Load#</th>
@@ -238,33 +320,94 @@ function TruckList(
                         <th>Current Location</th>
                         <th>Final Stop</th>
                         <th>Delivery Date</th>
+                        <th>Note</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td colSpan={2} >
-                            <button variant="outline-primary" className='mx-4'>Add Load</button>
-                            <button variant="outline-success">Delivered</button>
-                        </td>
-                        
-                        </tr>
+                        {drivers.map((driver, index) => {
+                            if (driver.status === 'Ready') {                     
+                                return ( 
+                                    <tr key={driver._id} onClick={() => getTruckInfo(driver, driver._id)}>
+                                        <td>{currentLoadNumber(driver.truckNumber)}</td>
+                                        <td>{driver.truckNumber}</td>
+                                        <td>{driver.driver1.firstName} {driver.driver1.lastName}</td>
+                                        <td style={{backgroundColor: '#c40606', color: 'white'}}>{driver.status}</td>
+                                        <td>{driver.type}</td>
+                                        <td>{driver.currentLocation}</td>                                    
+                                        <td>{lastDelivery(driver.truckNumber)}</td>                                                                            
+                                        <td>{lastDeliveryDate(driver.truckNumber)}</td>                                                                                                     
+                                        <td>{driver.note}</td>
+                                        <td colSpan={2} >
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={showEditWindow}>Edit Truck</button>
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => getDriverID(driver)}>New Order</button>
+                                        </td>                                    
+                                    </tr>
+                               )
+                            }                           
+                        })}
+                        {drivers.map((driver, index) => {
+                            if (driver.status === 'On Duty') {                     
+                                return ( 
+                                    <tr key={driver._id} onClick={() => getTruckInfo(driver, driver._id)}>
+                                        <td>{currentLoadNumber(driver.truckNumber)}</td>
+                                        <td>{driver.truckNumber}</td>
+                                        <td>{driver.driver1.firstName} {driver.driver1.lastName}</td>
+                                        <td style={{backgroundColor: 'green', color: 'white'}}>{driver.status}</td>
+                                        <td>{driver.type}</td>
+                                        <td>{driver.currentLocation}</td>                                    
+                                        <td>{lastDelivery(driver.truckNumber)}</td>                                                                            
+                                        <td>{lastDeliveryDate(driver.truckNumber)}</td>                                                                                                     
+                                        <td>{driver.note}</td>
+                                        <td colSpan={2} >
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={showEditWindow}>Edit Truck</button>
+                                            {/* <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => getDriverID(driver)}>New Order</button> */}
+                                            <button variant="outline-success">Delivered</button>
+                                        </td>                                    
+                                    </tr>
+                               )
+                            }                           
+                        })}
+                        {drivers.map((driver, index) => {
+                            if (driver.status !== 'On Duty' && driver.status !== 'Ready') {                     
+                                return ( 
+                                    <tr key={driver._id} onClick={() => getTruckInfo(driver, driver._id)}>
+                                        <td></td>
+                                        <td>{driver.truckNumber}</td>
+                                        <td>{driver.driver1.firstName} {driver.driver1.lastName}</td>
+                                        <td style={{backgroundColor: '#E9967A'}}>{driver.status}</td>
+                                        <td>{driver.type}</td>
+                                        <td>{driver.currentLocation}</td>                                    
+                                        <td>{lastDelivery(driver.truckNumber)}</td>                                                                            
+                                        <td>{lastDeliveryDate(driver.truckNumber)}</td>                                                                                                     
+                                        <td>{driver.note}</td>
+                                        <td colSpan={2} >
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={showEditWindow}>Edit Truck</button>
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => getDriverID(driver)}>New Order</button>
+
+                                        </td>                                    
+                                    </tr>
+                               )
+                            }                           
+                        })}
                     </tbody>
                 </Table>
             </section>
             </div>
 
-             <div className='col-lg-3 col-md-6 col-sm-3 d-inline'>
+            <div className='col-lg-3 col-md-6 col-sm-3 d-inline'>
                 <div className='bg-dark'> hello</div>
-    
-            <ShowDetails truckInfo={truckInfo}/>
-  
+                <ShowDetails 
+                truckInfo={truckInfo} 
+                loadInfo={loadID}
+                loads={loads}
+                setLoads={setLoads} 
+                drivers={drivers}
+                setDrivers={setDrivers}
+                />
             </div> 
         </div>
         ): null}
+
     </div>
   )
 }

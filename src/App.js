@@ -6,24 +6,29 @@ import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import SidebarMenu from './sidebarMenu/SidebarMenu';
 import TruckList from './pages/TruckList';
 import Drivers from './pages/Drivers';
+import Register from './pages/sessions/Register';
+import Login from './pages/sessions/Login';
 
 
 function App() {
   const [drivers, setDrivers] = useState([])
   const [trucklist, setTrucklist] = useState([])
   const [loads, setLoads] = useState([])
+  const [users, setUsers] = useState([])
 
   // ------------------- Drivers routes -----------------------
 
-  // let getDrivers = async () => {
-  //   let driversData = await fetch('http://localhost:4000/drivers')
-  //   let json = await driversData.json()
-  //   if(json) {
-  //     console.log(json);
-  //     setDrivers(json)
-  //   }
-  // }
+  let getDrivers = async () => {
+    let driversData = await fetch('http://localhost:4000/drivers')
+    let json = await driversData.json()
+    if(json) {
+      setDrivers(json)
+    }
+  }
 
+      useEffect(() => {
+        getDrivers()
+    }, [])
 
 
   let addDriver = (driver) => {
@@ -47,16 +52,16 @@ function App() {
   // ---------------- Add a Load -----------------------
 
 
-    // let getLoads = async () => {
-    //   let loadsData = await fetch('http://localhost:4000/loads')
-    //   let json = await loadsData.json()
-    //   if (json) {
-    //     setLoads(json)
-    //   }
-    // }
-    // useEffect(() => {
-    //   getLoads()
-    // }, [])
+    let getLoads = async () => {
+      let loadsData = await fetch('http://localhost:4000/loads')
+      let json = await loadsData.json()
+      if (json) {
+        setLoads(json)
+      }
+    }
+    useEffect(() => {
+      getLoads()
+    }, [])
     // useEffect(() => {
     //   fetch('http://localhost:4000/loads')
     //   .then((res) => res.json())
@@ -71,6 +76,11 @@ function App() {
     }
 
 
+
+    let addUser = (user) => {
+      setUsers([...user, users])
+    }
+
   return (
     <div >
       <Routes>
@@ -83,9 +93,11 @@ function App() {
             trucklist={trucklist} 
             setTrucklist={setTrucklist} 
             drivers={drivers}
+            setDrivers={setDrivers}
             addLoad={addLoad}
             loads={loads}
             setLoads={setLoads}
+            setUsers={setUsers}
             />} 
         />
 
@@ -97,6 +109,9 @@ function App() {
             setDrivers={setDrivers}
           />} 
         />
+
+        <Route path='/register' element={<Register users={users} addUser={addUser} setUsers={setUsers} />} />
+        <Route path='/login' element={<Login users={users} addUser={addUser} setUsers={setUsers} />} />
       </Routes>
     </div>
   );

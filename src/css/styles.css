@@ -1,0 +1,51 @@
+
+.sessionsContainer {
+    /* background-image: url('https://i.pinimg.com/736x/e3/1f/dc/e31fdcb921fa62efac61ed02a93f4d0d.jpg'); */
+    background-color: #4B6587;
+    position: absolute;
+    /* background-color: rgba(0,0,0,0.2); */
+    height: 100%;
+    width: 100%;
+    mix-blend-mode: normal;
+}
+.sessions {
+    font-size: 1rem;
+    background-color: aliceblue;
+    border-radius: 20px;
+    width: 400px;
+    padding: 30px;
+    box-shadow: 5px 5px 5px rgba(0,0,0,.2);
+}
+
+
+/* Sidebar */
+.sidebar {
+    background-color: #4B6587;
+    height: 100hv;
+    font-size: 2rem;
+    text-decoration: none;
+}
+
+a {
+    font-size:1rem;
+    text-decoration: none;
+    color: aliceblue;
+}
+p {
+    color: aliceblue;
+}
+.sidenav---navtext---1AE_f {
+    color: aliceblue;
+}
+
+.Modal {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 50%;
+    top: 50%;
+    overflow: auto;
+    background-color: #fff;
+    -webkit-transform: translate(-50,-50%);
+    transform: translate(-50,-50%);
+}

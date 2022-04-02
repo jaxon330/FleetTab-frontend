@@ -1,43 +1,58 @@
 import React from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHome, faLineChart, faTruck, faList, faFileInvoice, faIdCard, faUser, faHeadset, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
-function SidebarMenu() {
+import '../css/styles.css'
+function SidebarMenu({setUsers}) {
+
+    const navigate = useNavigate()
+    const goToLoginPage = () => navigate('/login')
+
+    let signOut = async () => {
+        let userData = await fetch('http://localhost:4000/sessions/logout')
+        let json = await userData.json()
+        if(json) {
+            setUsers(json)
+            goToLoginPage()
+        }
+      }
+
   return (
-    <div  style={{height: '100vh'}} >
-        <Nav>
-            jlkjwrwr
-        </Nav>
-        <SideNav 
-        style={{backgroundColor: '#4B6587'}}
+    <>
+        <SideNav className='sidebar'
             onSelect={(selected) => {
                 // Add your code here
             }}
         >
             <SideNav.Toggle />
             <SideNav.Nav defaultSelected="dashboard">
-                <NavItem eventKey="dashboard">
+                <NavItem eventKey="dashboard" >
+                   
                     <NavIcon>
+                    <Link to='/dashboard'>
                         <FontAwesomeIcon icon={faLineChart} style={{ fontSize: '1.5em' }} />
+                        </Link>
                     </NavIcon>
                     <NavText>
-                        Dashboard
+                    <Link to='/dashboard'>Dashboard</Link>
                     </NavText>
+                    
                 </NavItem>
                 <NavItem eventKey="trucklist">
                     <NavIcon>
-                        <FontAwesomeIcon icon={faTruck} style={{ fontSize: '1.5em' }} />
+                    <Link to='/trucklist'><FontAwesomeIcon icon={faTruck} style={{ fontSize: '1.5em' }} /></Link>
                     </NavIcon>
                     <NavText>
-                        Truck List
+                         <Link to='/trucklist'>Truck List</Link>
                     </NavText>
                 </NavItem>
                 <NavItem eventKey="history">
                     <NavIcon>
-                        <FontAwesomeIcon icon={faList} style={{ fontSize: '1.5em' }} />
+                    <Link to='/history'><FontAwesomeIcon icon={faList} style={{ fontSize: '1.5em' }} /></Link>
                     </NavIcon>
                     <NavText>
-                        History
+                    <Link to='/history'>History</Link>
                     </NavText>
                 </NavItem>
                 <NavItem eventKey="payments">
@@ -45,20 +60,20 @@ function SidebarMenu() {
                         <FontAwesomeIcon icon={faFileInvoice} style={{ fontSize: '1.75em' }} />
                     </NavIcon>
                     <NavText>
-                        Payments
+                    <Link to='/payment'>Payments</Link>
                     </NavText>
                 </NavItem>
                 <NavItem eventKey="drivers">
                     <NavIcon>
-                        <FontAwesomeIcon icon={faIdCard} style={{ fontSize: '1.5em' }} />
+                    <Link to='/drivers'><FontAwesomeIcon icon={faIdCard} style={{ fontSize: '1.5em' }} /></Link>
                     </NavIcon>
                     <NavText>
-                        Drivers
+                    <Link to='/drivers'>Drivers</Link>
                     </NavText>
                 </NavItem>
 
                 {/* user profile */}
-                <NavItem style={{position: 'absolute', bottom: 100}} eventKey="userProfile">
+                {/* <NavItem style={{position: 'absolute', bottom: 100}} eventKey="userProfile">
                     <NavIcon>
                         <FontAwesomeIcon icon={faUser} style={{ fontSize: '1.5em' }} />
                     </NavIcon>
@@ -73,18 +88,18 @@ function SidebarMenu() {
                     <NavText>
                         Contact Center
                     </NavText>
-                </NavItem>
+                </NavItem> */}
                 <NavItem style={{position: 'absolute', bottom: 0}}  eventKey="signOut">
                     <NavIcon>
-                        <FontAwesomeIcon  icon={faArrowRightFromBracket} style={{ fontSize: '1.5em' }} />
+                       <Link onClick={signOut} to='/login'> <FontAwesomeIcon  icon={faArrowRightFromBracket} style={{ fontSize: '1.5em' }} /></Link>
                     </NavIcon>
                     <NavText>
-                        Sign Out
+                        <Link to='/login'>Sign Out</Link>
                     </NavText>
                 </NavItem>
             </SideNav.Nav>
         </SideNav>
-    </div>
+    </>
   )
 }
 
