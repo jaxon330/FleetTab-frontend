@@ -9,12 +9,13 @@ import AddALoad from './trucklist/AddAload'
 import EditDriverOnList from './trucklist/EditDriverOnList'
 import SidebarMenu from '../sidebarMenu/SidebarMenu'
 import EditLoad from './trucklist/EditLoad'
+import Delivered from './trucklist/Delivered'
 
 function TruckList(
     {
         addATruck, trucklist, setTrucklist, drivers, loads, setLoads, addLoad, setDrivers, setUsers
     }) {
-     
+
     // Current date for header
     const dateToday = new Date()
 
@@ -41,23 +42,23 @@ function TruckList(
     let getTruckInfo = (...truck) => {
         setTruckInfo(truck[0])
         setTruckID(truck[1])
-        loads.map((load) => {
-            if(truck[1] === load._id) {
-                setLoadID(load) 
-            } if(truck[1] !== load._id) {
-                setLoadID('')
-            }
+        // loads.map((load) => {
+        //     if(truck[1] === load._id) {
+        //         setLoadID(load) 
+        //     } if(truck[1] !== load._id) {
+        //         setLoadID('')
+        //     }
 
-            return loadID
-        })
+        //     return loadID
+        // })
 
- 
+        setLoadID('')
+        // showAddALoadForm()
     }
 
-    let getDriverID = (data) => {
-        setTruckInfo(data)
-        showAddALoadForm()
-    }
+    console.log(truckInfo);
+    console.log(truckID);
+
 
     // get load id
     let getLoadInfo = (info) => {
@@ -65,25 +66,40 @@ function TruckList(
         setTruckInfo('')
     }
 
-    console.log('loadID => ' + loadID)
-    // Add a Truck modal window
-    const [createTruckForm, setCreateTruckForm] = useState(false)
-    const showCreateTruckForm = () => setCreateTruckForm(true)
-    const closeCreateTruckForm = () => setCreateTruckForm(false)
+
+    // Delivered Modal window
+    const [deliveredModal, setDeliveredModal] = useState(false)
+    const closeDeliveredModal = () => setDeliveredModal(false)
+    const showDeliveredModal = (info) => {
+        setLoadID(info)
+        setDeliveredModal(true)
+    }
 
     // Add a Load modal window
     const [addALoadForm, setAddALoadForm] = useState(false)
-    const showAddALoadForm = () => setAddALoadForm(true)
     const closeAddALoadForm = () => setAddALoadForm(false)
+    const showAddALoadForm = () => {
+        // setTruckInfo(info[0])
+        // setTruckID(info[1])
+        setAddALoadForm(true)
+    }
 
     // Edit a driver modal window
     const [editWindow, setEditWindow] = useState(false)
     const closeEditWindow = () => setEditWindow(false);
-    const showEditWindow = () => setEditWindow(true)
-
+    const showEditWindow = (...info) => {
+        setTruckInfo(info[0])
+        setTruckID(info[1])
+        setEditWindow(true)
+        setLoadID('')
+    }
+    // Edit a load modal window
     const [editLoadForm, setEditLoadForm] = useState(false)
     const closeEditLoadForm = () => setEditLoadForm(false)
-    const showEditLoadForm = () => setEditLoadForm(true)
+    const showEditLoadForm = (info) => {
+        setLoadID(info)
+        setEditLoadForm(true)
+    }
 
     // ? and : - is ternary operator
    
@@ -91,7 +107,7 @@ function TruckList(
         let deliveryAddress= ''                                            
         if(loads) {
             loads.map((load) => {
-                if(load.driverInfo && load.driverInfo.truckNumber === truckNumber){
+                if(load.driverInfo && load.driverInfo.truckNumber === truckNumber && load.loadStatus === 'open'){
                     let [lastStop] = load.stops.slice(-1)
                      deliveryAddress= lastStop.stop
                     
@@ -109,7 +125,7 @@ function TruckList(
         let deliveryDate= ''                                            
         if(loads) {
             loads.map((load) => {
-                if(load.driverInfo && load.driverInfo.truckNumber === truckNumber){
+                if(load.driverInfo && load.driverInfo.truckNumber === truckNumber && load.loadStatus === 'open'){
                     let [lastStop] = load.stops.slice(-1)
                     deliveryDate= new Date(lastStop.date).toLocaleDateString('us-US',{hour: 'numeric', minute: 'numeric'})
                     
@@ -126,7 +142,7 @@ function TruckList(
         let loadNumber= ''                                            
         if(loads) {
             loads.map((load) => {
-                if(load.driverInfo && load.driverInfo.truckNumber === truckNumber){
+                if(load.driverInfo && load.driverInfo.truckNumber === truckNumber && load.loadStatus === 'open'){
                     loadNumber = load.loadNumber
                    
                     
@@ -166,14 +182,14 @@ function TruckList(
  
   return (
     <div className='mx-0'>
-        
+{/*         
         <CreateATruck 
             createTruckForm={createTruckForm} 
             showCreateTruckForm={showCreateTruckForm} 
             closeCreateTruckForm={closeCreateTruckForm} 
             addATruck={addATruck}
             drivers={drivers}
-        />
+        /> */}
         {truckInfo === undefined ? null :
         <AddALoad 
             addALoadForm={addALoadForm} 
@@ -186,9 +202,10 @@ function TruckList(
             addLoad={addLoad}
             truckInfo={truckInfo}
             setDrivers={setDrivers}
+            truckID={truckID}
         />
     }
-        {truckID === undefined ? null :
+        {truckInfo === undefined ? null :
         <EditDriverOnList 
                 editWindow={editWindow}
                 setEditWindow={setEditWindow}
@@ -197,9 +214,12 @@ function TruckList(
                 driverID={truckID}
                 setDrivers={setDrivers}
                 drivers={drivers}
+                truckInfo={truckInfo}
+
             />
         }
 
+        {loadID?(
         <EditLoad 
             editLoadForm={editLoadForm} 
             showEditLoadForm={showEditLoadForm} 
@@ -211,7 +231,21 @@ function TruckList(
             addLoad={addLoad}
             truckInfo={truckInfo}
             setDrivers={setDrivers} 
+            loadInfo={loadID}
         />
+        ):null}
+        <Delivered
+            drivers={drivers}
+            loads={loads}
+            setLoads={setLoads}
+            setDrivers={setDrivers}
+            truckInfo={truckInfo}
+            loadInfo={loadID} 
+            deliveredModal={deliveredModal}
+            closeDeliveredModal={closeDeliveredModal}
+        />
+     
+
         <div className='mx-0'>
             <SidebarMenu setUsers={setUsers} />
         </div>
@@ -229,8 +263,8 @@ function TruckList(
             {/* Loads */}
             <section className='coveredTrucks' style={{marginLeft: '15px'}}>
                 <div className='mx-0' style={{backgroundColor: 'red'}}>
-                    <h3 className='d-inline mx-4'>Loads</h3>
-                    <button onClick={() => getDriverID('')} >Add a Truck</button>
+                    <h3 className='d-inline mx-4'>Orders</h3>
+                    <button onClick={() => showAddALoadForm()} >Add New Order</button>
                 </div>
                 <Table  bordered hover >
                     <thead>
@@ -248,6 +282,7 @@ function TruckList(
                     </thead>
                     <tbody>
                         {loads.map((load, index) => {
+                            if(load.loadStatus === 'open') {
                             const [lastStop] = load.stops.slice(-1)
                             const deliveryDate = new Date(lastStop.date)
                             const deliveryAddress = lastStop.stop   
@@ -264,19 +299,21 @@ function TruckList(
                                     <td>{deliveryDate.toLocaleDateString('us-US',{hour: 'numeric', minute: 'numeric'})}</td>  
                                     <td>{load.comment}</td>  
                                     <td colSpan={2} >
-                                        <button variant="outline-primary" className='mx-4' id={load._id} onClick={showEditLoadForm}>Edit Order</button>
-                                        <button variant="outline-success">Delivered</button>
+                                        <button variant="outline-primary" className='mx-4' id={load._id} onClick={() => showEditLoadForm(load._id)}>Edit Order</button>
+                                        <button variant="outline-success" onClick={() => showDeliveredModal(load)}>Delivered</button>
                                     </td>                                  
                                     </tr>
                                )
+                            }
                         })}
 
                         {loads.map((load, index) => {
-                            const [lastStop] = load.stops.slice(-1)
-                            const deliveryDate = new Date(lastStop.date)
-                            const deliveryAddress = lastStop.stop 
-                            const pickupDate = new Date(load.pickup.pickDate)
-                            if(load.driverInfo === '') { 
+
+                            if(load.driverInfo === '' && load.loadStatus === 'open') { 
+                                const [lastStop] = load.stops.slice(-1)
+                                const deliveryDate = new Date(lastStop.date)
+                                const deliveryAddress = lastStop.stop 
+                                const pickupDate = new Date(load.pickup.pickDate)
                                 return ( 
                                     <tr key={load._id} onClick={() => getLoadInfo(load)} style={{backgroundColor: '#D3D3D3'}}>
                                     <td>{load.loadNumber}</td>
@@ -289,8 +326,8 @@ function TruckList(
                                     <td>{deliveryDate.toLocaleDateString('us-US',{hour: 'numeric', minute: 'numeric'})}</td>  
                                     <td>{load.comment}</td>  
                                     <td colSpan={2} >
-                                        <button variant="outline-primary" className='mx-4' id={load._id} onClick={showEditLoadForm}>Edit Order</button>
-                                        <button variant="outline-success">Delivered</button>
+                                        <button variant="outline-primary" className='mx-4' id={load._id} onClick={() => showEditLoadForm(load)}>Edit Order</button>
+                                        <button variant="outline-success" onClick={() => showDeliveredModal(load)}>Delivered</button>
                                     </td>                                  
                                     </tr>
                                )
@@ -338,8 +375,8 @@ function TruckList(
                                         <td>{lastDeliveryDate(driver.truckNumber)}</td>                                                                                                     
                                         <td>{driver.note}</td>
                                         <td colSpan={2} >
-                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={showEditWindow}>Edit Truck</button>
-                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => getDriverID(driver)}>New Order</button>
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => showEditWindow(driver, driver._id)}>Edit Truck</button>
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={showAddALoadForm}>New Order</button>
                                         </td>                                    
                                     </tr>
                                )
@@ -359,7 +396,7 @@ function TruckList(
                                         <td>{lastDeliveryDate(driver.truckNumber)}</td>                                                                                                     
                                         <td>{driver.note}</td>
                                         <td colSpan={2} >
-                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={showEditWindow}>Edit Truck</button>
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => showEditWindow(driver, driver._id)}>Edit Truck</button>
                                             {/* <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => getDriverID(driver)}>New Order</button> */}
                                             <button variant="outline-success">Delivered</button>
                                         </td>                                    
@@ -381,8 +418,8 @@ function TruckList(
                                         <td>{lastDeliveryDate(driver.truckNumber)}</td>                                                                                                     
                                         <td>{driver.note}</td>
                                         <td colSpan={2} >
-                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={showEditWindow}>Edit Truck</button>
-                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => getDriverID(driver)}>New Order</button>
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => showEditWindow(driver, driver._id)}>Edit Truck</button>
+                                            <button variant="outline-primary" className='mx-4' id={driver._id} onClick={() => showAddALoadForm(driver, driver._id)}>New Order</button>
 
                                         </td>                                    
                                     </tr>

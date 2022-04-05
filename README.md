@@ -1,70 +1,79 @@
-# Getting Started with Create React App
+<!-- ABOUT THE PROJECT -->
+## FleetTab
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
 
-In the project directory, you can run:
+## Introduction
+FleetTab is a program designed for dispatchers where they can easily control transports, enter new orders into the system and manipulate them.
 
-### `npm start`
+## TECHNOLOGY USED
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* HTML
+* CSS
+* JavaScript
+* React
+* Bootstrap
+* Node.js
+* Express
+* Bcrypt
+* MongoDB
+* Mongoose
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## APPROACH
 
-### `npm test`
+I started off by making all CRUD worked in backend. Once I had set up all CRUD, I moved to design frontend, Installed react. then first build drivers page then moved to other pages.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## UNSOLVED PROBLEMS/STRETCH GOALS
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* As a user I would like to have an API which calculates distance automatically when new ordered added.
+* As a user I would like an invoice for each load will be created after load delivered/completed.
+* As a user I would like to have a dashboard page where I can see all statistics about load and drivers. For example weekly gross of the drivers, avarage per mile, amount of load and etc ...
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### MVP
+* As a user I want to be able to add new driver or modify existing driver in drivers page
+* As a user I want to be able to modify drivers from trucklist page 
+* User must able to add order information to the selected truck. After adding the load it shoud change the driver status to On Duty
+* user able to see information about load and driver by clicking to that row. And it should display all information on the right side.
+* user able to edit and delete selected order
+* as a user I want to see dialoge window with upload a file and add a note options when completed button clicked. inside this window by clicking submit button it should remove the row from Truck List and should
 
-### `npm run eject`
+### List of Models & Their Poperties
+#### Order Model
+* driverInfo: {type: mongoose.Schema.Types.ObjectId, ref: 'Driver'}
+* invoiceNumber: Number,
+* loadNumber: {type: String, required: true},
+* companyName: {type: String, required: true},
+* rate: Number,
+* emptyMilage: Number,
+* loadedMilage: Number,
+* comment: String,
+* loadStatus: {type: String, default: 'open'},
+* ateConfirmation: {data: Buffer, contentType: String},
+* proofeOfDelivery: {data: Buffer, contentType: String},
+* pickup: {pickLocation: String, pickDate: Date},
+* stops: [{stop: String, date: Date}]
+#### Driver Model
+* driver1: {
+    firstName: String,
+    lastName: String,
+    phoneNumber: Number,
+    homeAddress: String,
+},
+* driver2: {
+    driver2FirstName: String,
+    driver2LastName: String,
+    driver2PhoneNumber: Number,
+    driver2HomeAddress: String,
+},
+* truckNumber: Number,
+* trailerNumber: {type: Number, default: 0},
+* currentLocation: String,
+* type: String,
+* status: String,
+* note: String        
+    
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Instructions
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

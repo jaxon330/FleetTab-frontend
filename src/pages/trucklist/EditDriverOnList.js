@@ -5,40 +5,40 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-function EditDriverOnList({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID}) {
+function EditDriverOnList({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID, truckInfo}) {
     const [driver, setDriver] = useState({
-        driver1: {
-            firstName: '',
-            lastName: '',
-            phoneNumber: '',
-            homeAddress: ''
+          driver1: {
+            firstName: truckInfo && truckInfo.driver1.firstName,
+            lastName: truckInfo && truckInfo.driver1.lastName,
+            phoneNumber: truckInfo && truckInfo.driver1.phoneNumber,
+            homeAddress: truckInfo && truckInfo.driver1.homeAddress
         },
         driver2: {
-            driver2FirstName: '',
-            driver2LastName: '',
-            driver2PhoneNumber: '',
-            driver2HomeAddress: ''
+            driver2FirstName: truckInfo && truckInfo.driver2.driver2FirstName,
+            driver2LastName: truckInfo && truckInfo.driver2.driver2LastName,
+            driver2PhoneNumber: truckInfo && truckInfo.driver2.driver2PhoneNumber,
+            driver2HomeAddress: truckInfo && truckInfo.driver2.driver2HomeAddress
         },
-        truckNumber: '',
-        trailerNumber: '',
-        currentLocation: '',
-        type: '',
-        status: '',
-        note: ''
+        truckNumber: truckInfo && truckInfo.truckNumber,
+        trailerNumber: truckInfo && truckInfo.trailerNumber,
+        currentLocation: truckInfo && truckInfo.currentLocation,
+        type: truckInfo && truckInfo.type,
+        status: truckInfo && truckInfo.status,
+        note: truckInfo && truckInfo.note
     })
 
     const status = ['Ready', 'On Duty', 'In Transit', 'Off Duty']
     const fleetType = ['PO', 'VAN', 'PO/VAN', 'Reefer']
 
     
-    useEffect(() => {
-        fetch('http://localhost:4000/drivers/'+ driverID)
-        .then((res) => res.json())
-        .then((resJson) => {
-            setDriver(resJson)
-        })
-        .catch(error => console.error({'Error': error}))
-    }, [driverID])
+    // useEffect(() => {
+    //     fetch('http://localhost:4000/drivers/'+ driverID)
+    //     .then((res) => res.json())
+    //     .then((resJson) => {
+    //         setDriver(resJson)
+    //     })
+    //     .catch(error => console.error({'Error': error}))
+    // }, [driverID])
 
     const navigate = useNavigate()
     const goToDriversPage = () => navigate('/drivers')

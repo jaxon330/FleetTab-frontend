@@ -10,12 +10,13 @@ function Login({users, setUsers}) {
         password: ''
     }) 
 
+    let errorMessage = ''
     const navigate = useNavigate()
     const goToTrucklistPage = () => navigate('/trucklist')
 
    let handleSubmit = async (e) => {
        e.preventDefault()
-       
+       console.log('hit');
        let userData = await fetch('http://localhost:4000/sessions/login', {
            method: 'POST',
            body: JSON.stringify({
@@ -28,10 +29,16 @@ function Login({users, setUsers}) {
 
            
        })
-       let userToLogin = await userData.json()
-       console.log('FrontEnd '+ userToLogin);
+    //    let userToLogin = await userData.json()
+    //    console.log(userData);
+    //    console.log('FrontEnd '+ userToLogin);
     //    setUsers(userToLogin)
-    navigate('/trucklist')
+    
+    if (userData.status === 200) {
+        navigate('/trucklist')
+    } else {
+        errorMessage = 'Invalid username or password'
+    }
    }
 
    let handleChange = (event) => {
@@ -51,6 +58,7 @@ function Login({users, setUsers}) {
         <Form onSubmit={handleSubmit} >
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Username</Form.Label>
+                <p>{errorMessage}</p>
                 <Form.Control type="text" placeholder="Enter username" name='username' onChange={handleChange} />
 
             </Form.Group>
@@ -59,7 +67,7 @@ function Login({users, setUsers}) {
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" placeholder="Password" name='password' onChange={handleChange} />
             </Form.Group>
-            <Button variant="primary" >
+            <Button variant="primary" type='submit' >
                 Login
             </Button>
             <Link to='/register' style={{color: 'black', marginLeft: '30px'}}>Register</Link>

@@ -19,15 +19,17 @@ function AddALoad(
           loads, 
           setLoads, 
           addLoad,
-          setDrivers
+          setDrivers,
+          truckID
     }) {
   
       const status = ['Ready', 'On Duty', 'In Transit', 'Off Duty']
       const fleetType = ['PO', 'VAN', 'PO/VAN', 'Reefer']
       const [extraStop, setExtraStop] = useState([{stop:'', date:''}])
       const [pickupInfo, setPickupInfo] = useState({pickLocation:'', pickDate: ''})
+      const [file, setFile] = useState('')
       const [newLoad, setNewLoad] = useState({
-        driverInfo: truckInfo && truckInfo._id,
+        driverInfo: truckID,
         invoiceNumber: '',
         loadNumber: '',
         companyName: '',
@@ -35,7 +37,7 @@ function AddALoad(
         emptyMilage: '',
         loadedMilage: '',
         comment: '',
-        loadStatus: '',
+        loadStatus: 'open',
         rateConfirmation: '',
         proofeOfDelivery: '',
         pickup: pickupInfo,
@@ -43,6 +45,9 @@ function AddALoad(
   
       })
 
+      useEffect(() => {
+
+      })
   
 
       let handleSubmit = async (e) => {
@@ -50,7 +55,7 @@ function AddALoad(
         let response = await fetch('http://localhost:4000/loads', {
           method: 'POST',
           body: JSON.stringify({
-            driverInfo: newLoad.driverInfo,
+            driverInfo: truckID,
             invoiceNumber: newLoad.invoiceNumber,
             loadNumber: newLoad.loadNumber,
             companyName: newLoad.companyName,
@@ -58,8 +63,8 @@ function AddALoad(
             emptyMilage: newLoad.emptyMilage,
             loadedMilage: newLoad.loadedMilage,
             comment: newLoad.comment,
-            loadStatus: newLoad.loadStatus,
-            rateConfirmation: newLoad.rateConfirmation,
+            loadStatus: 'open',
+            rateConfirmation: file,
             proofeOfDelivery: newLoad.proofeOfDelivery,
             pickup: pickupInfo,
             stops: newLoad.stops
@@ -68,7 +73,7 @@ function AddALoad(
             'Content-Type': 'application/json'
           }
         })
-        let changeDriverStatus = await fetch('http://localhost:4000/drivers/edit/'+ truckInfo._id, {
+        let changeDriverStatus = await fetch('http://localhost:4000/drivers/edit/'+ truckID, {
             method: 'PUT',
             body: JSON.stringify({
                 driver1: {
@@ -97,7 +102,7 @@ function AddALoad(
        
 
         let createdLoad = await response.json()
-
+        console.log(createdLoad);
         addLoad(createdLoad)
        
 
@@ -113,8 +118,9 @@ function AddALoad(
 
         }
         closeAddALoadForm()
+        window.location.reload(true);
         // setNewLoad({
-        //   driverInfo: truckInfo?truckInfo._id:null,
+        //   driverInfo: truckID,
         //   invoiceNumber: '',
         //   loadNumber: '',
         //   companyName: '',
@@ -138,10 +144,14 @@ function AddALoad(
         setNewLoad({...newLoad, [event.target.name]:event.target.value})
     }
 
+    const attacheFIle = (e) => {
+      setFile({[e.target.name]: e.target.files[0]})
+    }
+
     const handlePickupChange = (e) => {
       setPickupInfo({...pickupInfo, [e.target.name]:e.target.value})
     }
-    console.log(pickupInfo);
+
     const handleChangeExtra = (e, index) => {
       const { name, value } = e.target
       const list = [...extraStop]
@@ -158,6 +168,8 @@ function AddALoad(
       setExtraStop(list)
     }
 
+    console.log(truckID);
+    console.log(truckInfo);
 
   return (
     <>
@@ -283,7 +295,7 @@ function AddALoad(
             ))}
             <Form.Group className="mb-3 col" controlId="formBasicAddAfile">
                 <Form.Label>Add a file</Form.Label>
-                <Form.Control type="file" name='rateConfirmation' onChange={handleChange} value={newLoad.rateConfirmation}   />
+                <Form.Control type="file" name='rateConfirmation' onChange={attacheFIle}    />
               </Form.Group>
             
             <Form.Group className="mb-3" controlId="formBasicComment">
@@ -294,7 +306,7 @@ function AddALoad(
 
           </Modal.Body>
           <Modal.Footer>
-          <Button variant="primary" onClick={handleExtraStop}>
+          <Button variant="info" onClick={handleExtraStop}>
               Add a Stop
             </Button>
             <Button variant="secondary" onClick={closeAddALoadForm}>

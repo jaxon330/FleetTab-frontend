@@ -8,6 +8,7 @@ import TruckList from './pages/TruckList';
 import Drivers from './pages/Drivers';
 import Register from './pages/sessions/Register';
 import Login from './pages/sessions/Login';
+import History from './pages/History';
 
 
 function App() {
@@ -109,6 +110,8 @@ function App() {
             setDrivers={setDrivers}
           />} 
         />
+
+        <Route path='/history' element={<History drivers={drivers} loads={loads} />} />
 
         <Route path='/register' element={<Register users={users} addUser={addUser} setUsers={setUsers} />} />
         <Route path='/login' element={<Login users={users} addUser={addUser} setUsers={setUsers} />} />

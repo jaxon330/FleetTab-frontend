@@ -67,14 +67,14 @@ function ShowDetails({truckInfo, loadInfo, loads, setLoads, drivers, setDrivers}
         date = date.toLocaleDateString('us-US',{hour: 'numeric', minute: 'numeric'})
         return date
     }
-    
+
   return (
       
     <div className='details'>
         <h4>Driver Info:</h4>
         <hr />
         <Table>
-        {truckInfo?(
+        {truckInfo ?(
             <tbody>
                 <tr><td>Driver: </td><td>{truckInfo.driver1.firstName} {truckInfo.driver1.lastName}</td></tr>
                 <tr><td>Driver2: </td><td>{truckInfo.driver2.driver2FirstName} {truckInfo.driver2.driver2LastName}</td></tr>
@@ -91,7 +91,7 @@ function ShowDetails({truckInfo, loadInfo, loads, setLoads, drivers, setDrivers}
         <h4>Order Info:</h4>
         <hr />
         <Table>
-        {loadInfo && (
+        {loadInfo ? (
             <tbody>
                 <tr><td>Broker Company </td><td>{loadInfo.companyName}</td></tr>
                 <tr><td>Broker Load#</td><td>{loadInfo.loadNumber}</td></tr>
@@ -108,7 +108,7 @@ function ShowDetails({truckInfo, loadInfo, loads, setLoads, drivers, setDrivers}
                 })}
                 
             </tbody>
-        )}
+        ): null}
         </Table>
 
         <div className='text-center' style={{display: 'grid', gridAutoFlow: 'column', gridColumnGap: '10px'}}>

@@ -19,25 +19,27 @@ function EditLoad(
           loads, 
           setLoads, 
           addLoad,
-          setDrivers
+          setDrivers,
+          loadInfo
+
     }) {
   
       const status = ['Ready', 'On Duty', 'In Transit', 'Off Duty']
       const fleetType = ['PO', 'VAN', 'PO/VAN', 'Reefer']
-      const [extraStop, setExtraStop] = useState([{stop:'', date:''}])
-      const [pickupInfo, setPickupInfo] = useState({pickLocation:'', pickDate: ''})
-      const [newLoad, setNewLoad] = useState({
-        driverInfo: truckInfo?truckInfo._id:null,
-        invoiceNumber: '',
-        loadNumber: '',
-        companyName: '',
-        rate: '',
-        emptyMilage: '',
-        loadedMilage: '',
-        comment: '',
-        loadStatus: '',
-        rateConfirmation: '',
-        proofeOfDelivery: '',
+      const [extraStop, setExtraStop] = useState([{stop:loadInfo.stops.stop, date:loadInfo.stops.date}])
+      const [pickupInfo, setPickupInfo] = useState({pickLocation:loadInfo.pickup.pickLocation, pickDate: loadInfo.pickup.pickDate})
+      const [editLoad, setEditLoad] = useState({
+        driverInfo: loadInfo.driverInfo._id,
+        invoiceNumber: loadInfo.invoiceNumber,
+        loadNumber: loadInfo.loadNumber,
+        companyName: loadInfo.companyName,
+        rate: loadInfo.rate,
+        emptyMilage: loadInfo.emptyMilage,
+        loadedMilage: loadInfo.loadedMilage,
+        comment: loadInfo.comment,
+        loadStatus: loadInfo.loadStatus,
+        rateConfirmation: loadInfo.rateConfirmation,
+        proofeOfDelivery: loadInfo.proofeOfDelivery,
         pickup: pickupInfo,
         stops: extraStop
   
@@ -47,22 +49,22 @@ function EditLoad(
 
       let handleSubmit = async (e) => {
         e.preventDefault()
-        let response = await fetch('http://localhost:4000/loads', {
-          method: 'POST',
+        let response = await fetch('http://localhost:4000/loads/edit/' + loadInfo._id, {
+          method: 'PUT',
           body: JSON.stringify({
-            driverInfo: newLoad.driverInfo,
-            invoiceNumber: newLoad.invoiceNumber,
-            loadNumber: newLoad.loadNumber,
-            companyName: newLoad.companyName,
-            rate: newLoad.rate,
-            emptyMilage: newLoad.emptyMilage,
-            loadedMilage: newLoad.loadedMilage,
-            comment: newLoad.comment,
-            loadStatus: newLoad.loadStatus,
-            rateConfirmation: newLoad.rateConfirmation,
-            proofeOfDelivery: newLoad.proofeOfDelivery,
-            pickup: pickupInfo,
-            stops: newLoad.stops
+            driverInfo: editLoad.driverInfo,
+            invoiceNumber: editLoad.invoiceNumber,
+            loadNumber: editLoad.loadNumber,
+            companyName: editLoad.companyName,
+            rate: editLoad.rate,
+            emptyMilage: editLoad.emptyMilage,
+            loadedMilage: editLoad.loadedMilage,
+            comment: editLoad.comment,
+            loadStatus: 'open',
+            rateConfirmation: editLoad.rateConfirmation,
+            proofeOfDelivery: editLoad.proofeOfDelivery,
+            pickup: editLoad.pickup,
+            stops: editLoad.stops
           }),
           headers: {
             'Content-Type': 'application/json'
@@ -73,23 +75,23 @@ function EditLoad(
             method: 'PUT',
             body: JSON.stringify({
                 driver1: {
-                    firstName: truckInfo.driver1.firstName,
-                    lastName: truckInfo.driver1.lastName,
-                    phoneNumber: truckInfo.driver1.phoneNumber,
-                    homeAddress: truckInfo.driver1.homeAddress
+                    firstName: loadInfo.driverInfo.driver1.firstName,
+                    lastName: loadInfo.driverInfo.driver1.lastName,
+                    phoneNumber: loadInfo.driverInfo.driver1.phoneNumber,
+                    homeAddress: loadInfo.driverInfo.driver1.homeAddress
                 },
                 driver2: {
-                    driver2FirstName: truckInfo.driver2.driver2FirstName,
-                    driver2LastName: truckInfo.driver2.driver2LastName,
-                    driver2PhoneNumber: truckInfo.driver2.driver2PhoneNumber,
-                    driver2HomeAddress: truckInfo.driver2.driver2HomeAddress
+                    driver2FirstName: loadInfo.driverInfo.driver2.driver2FirstName,
+                    driver2LastName: loadInfo.driverInfo.driver2.driver2LastName,
+                    driver2PhoneNumber: loadInfo.driverInfo.driver2.driver2PhoneNumber,
+                    driver2HomeAddress: loadInfo.driverInfo.driver2.driver2HomeAddress
                 },
-                truckNumber: truckInfo.truckNumber,
-                trailerNumber: truckInfo.trailerNumber,
-                currentLocation: truckInfo.currentLocation,
-                type: truckInfo.type,
+                truckNumber: loadInfo.driverInfo.truckNumber,
+                trailerNumber: loadInfo.driverInfo.trailerNumber,
+                currentLocation: loadInfo.driverInfo.currentLocation,
+                type: loadInfo.driverInfo.type,
                 status: 'On Duty',
-                note: truckInfo.note
+                note: loadInfo.driverInfo.note
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -109,9 +111,16 @@ function EditLoad(
         }
        
       // }
-        let createdLoad = await response.json()
-        addLoad(createdLoad)
-        setNewLoad('')
+      let createdLoad = await response.json()
+      if (createdLoad) {
+        let data = loads.map((load) => {
+          if(load._id === createdLoad._id){
+            return createdLoad
+          }
+          return load
+        })
+        setLoads(data)
+      }
 
         closeEditLoadForm()
       }
@@ -119,13 +128,12 @@ function EditLoad(
 
     
     const handleChange = (event) => {
-        setNewLoad({...newLoad, [event.target.name]:event.target.value})
+        setEditLoad({...editLoad, [event.target.name]:event.target.value})
     }
 
     const handlePickupChange = (e) => {
       setPickupInfo({...pickupInfo, [e.target.name]:e.target.value})
     }
-    console.log(pickupInfo);
     const handleChangeExtra = (e, index) => {
       const { name, value } = e.target
       const list = [...extraStop]
@@ -149,17 +157,17 @@ function EditLoad(
       <Modal show={editLoadForm} onHide={closeEditLoadForm} >
       <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
-            <Modal.Title id="order-food">New Order</Modal.Title>
+            <Modal.Title id="order-food">Edit Order</Modal.Title>
           </Modal.Header>
           <Modal.Body >
 
           {/* Driver / Current Location */}
-            <div className='row'>
+            {/* <div className='row'>
 
               <Form.Group className='mb-3 col'>
               <Form.Label>Driver</Form.Label>
               
-                <Form.Select aria-label="Default select example" name='driver' onChange={handleChange} value={newLoad.driver}>
+                <Form.Select aria-label="Default select example" name='driver' onChange={handleChange} value={editLoad.driver}>
                   <option value={null}>Select a Driver</option>
                   {drivers.map((driver, index) => {
                     if(driver.truckNumber === truckInfo?truckInfo.truckNumber:'null' ) 
@@ -172,15 +180,15 @@ function EditLoad(
 
               <Form.Group className="mb-3 col" controlId="formBasicLocation">
                 <Form.Label>Current Location</Form.Label>
-                <Form.Control type="text" name='location' placeholder="Enter Current Location" onChange={handleChange} value={newLoad.location}    required />
+                <Form.Control type="text" name='location' placeholder="Enter Current Location" onChange={handleChange} value={editLoad.location}    required />
               </Form.Group>
-            </div>
+            </div> */}
 
         {/* Status / Type ------------------- */}
             <div className='row'>
               {/* <Form.Group className='col mb-3'>  
               <Form.Label className=''>Status</Form.Label>
-                <Form.Select className='' aria-label="Default select example" name='driverStatus' onChange={handleChange} value={newLoad.driverStatus} required>
+                <Form.Select className='' aria-label="Default select example" name='driverStatus' onChange={handleChange} value={editLoad.driverStatus} required>
                 <option value={null}>Select a Status</option>
                   {status.map((sts, index) => (
                     <option key={index} value={sts}>{sts}</option>
@@ -191,7 +199,7 @@ function EditLoad(
 
               <Form.Group className='col mb-3'>  
               <Form.Label >Type</Form.Label>
-                <Form.Select  name='type' onChange={handleChange} value={newLoad.type} required>
+                <Form.Select  name='type' onChange={handleChange} value={editLoad.type} required>
                 <option value={null}>Select Type</option>
                   {fleetType.map((type, index) => (
                     <option key={index} value={type}>{type}</option>
@@ -202,8 +210,8 @@ function EditLoad(
             </div>
 
             <div className='row mb-3'>
-              <h4>Driver: {truckInfo?`${truckInfo.driver1.firstName} ${truckInfo.driver1.lastName}`:'null'}</h4>
-              <h5>Truck#: {truckInfo?`${truckInfo.truckNumber}`:'null'}</h5>
+              <h4>Driver: {loadInfo.driverInfo?`${loadInfo.driverInfo.driver1.firstName} ${loadInfo.driverInfo.driver1.lastName}`:'null'}</h4>
+              <h5>Truck#: {loadInfo.driverInfo?`${loadInfo.driverInfo.truckNumber}`:'null'}</h5>
               <hr/>
 
 
@@ -213,11 +221,11 @@ function EditLoad(
              
             <Form.Group className="mb-3 col" controlId="formBasicloadNumber">
                 <Form.Label>Order Number</Form.Label>
-                <Form.Control type="text" name='loadNumber' placeholder="Enter order's number" onChange={handleChange} value={newLoad.loadNumber}   />
+                <Form.Control type="text" name='loadNumber' placeholder="Enter order's number" onChange={handleChange} value={editLoad.loadNumber}   />
               </Form.Group>
               <Form.Group className="mb-3 col" controlId="formBasicCompanyName">
                 <Form.Label>Broker Company</Form.Label>
-                <Form.Control type="text" name='companyName' placeholder="Company name" onChange={handleChange} value={newLoad.companyName}   />
+                <Form.Control type="text" name='companyName' placeholder="Company name" onChange={handleChange} value={editLoad.companyName}   />
               </Form.Group>
 
             </div>
@@ -225,15 +233,15 @@ function EditLoad(
             <div className='row'>
             <Form.Group className="mb-3 col" controlId="formBasicrate">
                 <Form.Label>Rate</Form.Label>
-                <Form.Control type="Number" name='rate' placeholder="$" onChange={handleChange} value={newLoad.rate}   />
+                <Form.Control type="Number" name='rate' placeholder="$" onChange={handleChange} value={editLoad.rate}   />
               </Form.Group>
               <Form.Group className="mb-3 col" controlId="formBasicLoadedMilage">
                 <Form.Label>Milage</Form.Label>
-                <Form.Control type="number" name='loadedMilage' placeholder="" onChange={handleChange} value={newLoad.loadedMilage}   />
+                <Form.Control type="number" name='loadedMilage' placeholder="" onChange={handleChange} value={editLoad.loadedMilage}   />
               </Form.Group>
               <Form.Group className="mb-3 col" controlId="formBasicrate">
                 <Form.Label>Empty Milage</Form.Label>
-                <Form.Control type="Number" name='emptyMilage' placeholder="" onChange={handleChange} value={newLoad.emptyMilage}   />
+                <Form.Control type="Number" name='emptyMilage' placeholder="" onChange={handleChange} value={editLoad.emptyMilage}   />
               </Form.Group>
             </div>
             
@@ -267,12 +275,12 @@ function EditLoad(
             ))}
             <Form.Group className="mb-3 col" controlId="formBasicAddAfile">
                 <Form.Label>Add a file</Form.Label>
-                <Form.Control type="file" name='rateConfirmation' onChange={handleChange} value={newLoad.rateConfirmation}   />
+                <Form.Control type="file" name='rateConfirmation' onChange={handleChange} value={editLoad.rateConfirmation}   />
               </Form.Group>
             
             <Form.Group className="mb-3" controlId="formBasicComment">
               <Form.Label>Comment</Form.Label>
-              <Form.Control type="textarea" name='comment' placeholder="Leave a comment here" onChange={handleChange} value={newLoad.comment}  />
+              <Form.Control type="textarea" name='comment' placeholder="Leave a comment here" onChange={handleChange} value={editLoad.comment}  />
               
             </Form.Group>
 

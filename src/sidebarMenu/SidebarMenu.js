@@ -35,7 +35,7 @@ function SidebarMenu({setUsers}) {
                         </Link>
                     </NavIcon>
                     <NavText>
-                    <Link to='/dashboard'>Dashboard</Link>
+                        Dashboard
                     </NavText>
                     
                 </NavItem>

@@ -112,7 +112,7 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
     <Modal show={editWindow} onHide={closeEditWindow}>
     <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title id="order-food">New Driver</Modal.Title>
+          <Modal.Title id="order-food">Edit Driver</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <div className='row'>          
@@ -144,7 +144,7 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
               </Form.Group>
               <Form.Group className="col mb-3" controlId="formBasicTrailerNumber">
               <Form.Label>Trailer Number</Form.Label>
-              <Form.Control type="number" name='trailerNumber' placeholder="Enter a Trailer Number" onChange={handleChange} value={driver.trailerNumber}  required />
+              <Form.Control type="number" name='trailerNumber' placeholder="Enter a Trailer Number" onChange={handleChange} value={driver.trailerNumber}  />
               </Form.Group>
           </div>
 

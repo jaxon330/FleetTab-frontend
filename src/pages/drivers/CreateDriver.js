@@ -29,7 +29,7 @@ function CreateDriver({handleClose, handleShow, show, setShow, addDriver}) {
 
     const status = ['Ready', 'On Duty', 'In Transit', 'Off Duty']
     const fleetType = ['PO', 'VAN', 'PO/VAN', 'Reefer']
-
+    
     const navigate = useNavigate()
     const goToDriversPage = () => navigate('/drivers')
 
@@ -125,7 +125,7 @@ function CreateDriver({handleClose, handleShow, show, setShow, addDriver}) {
                 </Form.Group>
                 <Form.Group className="col mb-3" controlId="formBasicTrailerNumber">
                 <Form.Label>Trailer Number</Form.Label>
-                <Form.Control type="number" name='trailerNumber' placeholder="Enter a Trailer Number" onChange={handleChange} value={newDriver.trailerNumber}  required />
+                <Form.Control type="number" name='trailerNumber' placeholder="Enter a Trailer Number" onChange={handleChange} value={newDriver.trailerNumber} />
                 </Form.Group>
             </div>
 
