@@ -22,7 +22,6 @@ function App() {
 
   // ------------------- Drivers routes -----------------------
 
-  console.log(backendURL);
   let getDrivers = async () => {
 
     let driversData = await fetch(backendURL + 'drivers')
@@ -43,13 +42,6 @@ function App() {
 
   // ----------------- Truck list ----------------------------
 
-    // let getTruckList = async () => {
-    //   let trucklistData = await fetch('http://localhost:4000')
-    //   let json = await trucklistData.json()
-    //   if (json) {
-    //     setTrucklist(json)
-    //   }
-    // }
 
     let addATruck = (truck) => {
       setTrucklist([...trucklist, truck])

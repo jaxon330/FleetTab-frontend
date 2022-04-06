@@ -5,7 +5,9 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-function CreateDriver({handleClose, handleShow, show, setShow, addDriver, backendURL}) {
+function CreateDriver({handleClose, handleShow, show, setShow, addDriver}) {
+  const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
+
     const [newDriver, setNewDriver] = useState({
         driver1: {
             firstName: '',

@@ -9,7 +9,9 @@ import CreateDriver from './drivers/CreateDriver'
 import EditDriver from './drivers/EditDriver'
 import SidebarMenu from '../sidebarMenu/SidebarMenu'
 
-function Drivers({addDriver, drivers, setDrivers, backendURL}) {
+function Drivers({addDriver, drivers, setDrivers}) {
+    
+    const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
 
     // Driver id
     const [driverID, setDriverID] = useState()

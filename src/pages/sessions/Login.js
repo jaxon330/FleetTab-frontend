@@ -9,6 +9,8 @@ function Login({users, setUsers}) {
         username: '',
         password: ''
     }) 
+    const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
+
 
     let errorMessage = ''
     const navigate = useNavigate()
@@ -17,7 +19,7 @@ function Login({users, setUsers}) {
    let handleSubmit = async (e) => {
        e.preventDefault()
        console.log('hit');
-       let userData = await fetch('http://localhost:4000/sessions/login', {
+       let userData = await fetch(backendURL+ 'sessions/login', {
            method: 'POST',
            body: JSON.stringify({
                username: userLoggedIn.username,

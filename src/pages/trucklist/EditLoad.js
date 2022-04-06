@@ -20,11 +20,12 @@ function EditLoad(
           setLoads, 
           addLoad,
           setDrivers,
-          loadInfo,
-          backendURL
+          loadInfo
 
     }) {
-  
+      
+      const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
+
       const status = ['Ready', 'On Duty', 'In Transit', 'Off Duty']
       const fleetType = ['PO', 'VAN', 'PO/VAN', 'Reefer']
       const [extraStop, setExtraStop] = useState([{stop:loadInfo.stops.stop, date:loadInfo.stops.date}])

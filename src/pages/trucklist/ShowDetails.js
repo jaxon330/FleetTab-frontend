@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import Table from 'react-bootstrap/esm/Table';
 
-function ShowDetails({truckInfo, loadInfo, loads, setLoads, drivers, setDrivers, backendURL}) {
+function ShowDetails({truckInfo, loadInfo, loads, setLoads, drivers, setDrivers}) {
+    
+    const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
 
             // Deleter route
   let deleteOrder = async () => {

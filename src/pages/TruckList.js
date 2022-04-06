@@ -13,8 +13,9 @@ import Delivered from './trucklist/Delivered'
 
 function TruckList(
     {
-        addATruck, trucklist, setTrucklist, drivers, loads, setLoads, addLoad, setDrivers, setUsers, backendURL
+        addATruck, trucklist, setTrucklist, drivers, loads, setLoads, addLoad, setDrivers, setUsers
     }) {
+        const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
 
     // Current date for header
     const dateToday = new Date()
@@ -55,10 +56,6 @@ function TruckList(
         setLoadID('')
         // showAddALoadForm()
     }
-
-    console.log(truckInfo);
-    console.log(truckID);
-
 
     // get load id
     let getLoadInfo = (info) => {

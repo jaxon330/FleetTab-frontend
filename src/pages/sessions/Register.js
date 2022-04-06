@@ -4,6 +4,8 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/esm/Button'
 
 function Register({users, addUser, setUsers}) {
+    const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
+
      const [newUser, setNewUser] = useState({
          username: '',
          password: '',
@@ -16,7 +18,7 @@ function Register({users, addUser, setUsers}) {
     let handleSubmit = async (e) => {
         e.preventDefault()
         
-        let userData = await fetch('http://localhost:4000/sessions/register', {
+        let userData = await fetch(backendURL + 'sessions/register', {
             method: 'POST',
             body: JSON.stringify({
                 username: newUser.username,

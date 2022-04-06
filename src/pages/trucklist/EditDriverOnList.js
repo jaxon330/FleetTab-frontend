@@ -5,7 +5,9 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-function EditDriverOnList({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID, truckInfo, backendURL}) {
+function EditDriverOnList({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID, truckInfo}) {
+  
+  const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
     const [driver, setDriver] = useState({
           driver1: {
             firstName: truckInfo && truckInfo.driver1.firstName,

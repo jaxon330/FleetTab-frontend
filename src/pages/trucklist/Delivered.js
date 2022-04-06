@@ -3,7 +3,9 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
-function Delivered({deliveredModal, closeDeliveredModal, loadInfo, truckInfo, setLoads, setDrivers, drivers, loads, backendURL}) {
+function Delivered({deliveredModal, closeDeliveredModal, loadInfo, truckInfo, setLoads, setDrivers, drivers, loads}) {
+
+  const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
 
   const [file, setFile] = useState('')
   const [comment, setComment] = useState('')
@@ -96,7 +98,6 @@ function Delivered({deliveredModal, closeDeliveredModal, loadInfo, truckInfo, se
   const attacheFIle = (e) => {
     setFile({[e.target.name]: e.target.files[0]})
   }
-  console.log(file);
 
   return (
     <div>
