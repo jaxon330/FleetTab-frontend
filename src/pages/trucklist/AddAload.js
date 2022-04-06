@@ -20,7 +20,8 @@ function AddALoad(
           setLoads, 
           addLoad,
           setDrivers,
-          truckID
+          truckID,
+          backendURL
     }) {
   
       const status = ['Ready', 'On Duty', 'In Transit', 'Off Duty']
@@ -52,7 +53,7 @@ function AddALoad(
 
       let handleSubmit = async (e) => {
         e.preventDefault()
-        let response = await fetch('http://localhost:4000/loads', {
+        let response = await fetch(backendURL + 'loads', {
           method: 'POST',
           body: JSON.stringify({
             driverInfo: truckID,
@@ -73,7 +74,7 @@ function AddALoad(
             'Content-Type': 'application/json'
           }
         })
-        let changeDriverStatus = await fetch('http://localhost:4000/drivers/edit/'+ truckID, {
+        let changeDriverStatus = await fetch(backendURL + 'drivers/edit/'+ truckID, {
             method: 'PUT',
             body: JSON.stringify({
                 driver1: {

@@ -17,10 +17,15 @@ function App() {
   const [loads, setLoads] = useState([])
   const [users, setUsers] = useState([])
 
+
+  const backendURL = process.env.REACT_APP_ENV === 'production' ? 'https://fleettab-backend.herokuapp.com/' : 'http://localhost:4000/'
+
   // ------------------- Drivers routes -----------------------
 
+  console.log(backendURL);
   let getDrivers = async () => {
-    let driversData = await fetch('http://localhost:4000/drivers')
+
+    let driversData = await fetch(backendURL + 'drivers')
     let json = await driversData.json()
     if(json) {
       setDrivers(json)
@@ -54,7 +59,8 @@ function App() {
 
 
     let getLoads = async () => {
-      let loadsData = await fetch('http://localhost:4000/loads')
+
+      let loadsData = await fetch(backendURL + 'loads')
       let json = await loadsData.json()
       if (json) {
         setLoads(json)
@@ -63,14 +69,7 @@ function App() {
     useEffect(() => {
       getLoads()
     }, [])
-    // useEffect(() => {
-    //   fetch('http://localhost:4000/loads')
-    //   .then((res) => res.json())
-    //   .then((resJson) => {
-    //     setLoads(resJson)
-    //   })
-    //   .catch(error => console.error({'Error': error}))
-    // })
+
 
     let addLoad = (load) => {
       setLoads([...loads, load])
@@ -111,10 +110,10 @@ function App() {
           />} 
         />
 
-        <Route path='/history' element={<History drivers={drivers} loads={loads} />} />
+        <Route path='/history' element={<History drivers={drivers} loads={loads} backendURL={backendURL} />} />
 
-        <Route path='/register' element={<Register users={users} addUser={addUser} setUsers={setUsers} />} />
-        <Route path='/login' element={<Login users={users} addUser={addUser} setUsers={setUsers} />} />
+        <Route path='/register' element={<Register users={users} addUser={addUser} setUsers={setUsers} backendURL={backendURL}  />} />
+        <Route path='/login' element={<Login users={users} addUser={addUser} setUsers={setUsers} backendURL={backendURL}  />} />
       </Routes>
     </div>
   );

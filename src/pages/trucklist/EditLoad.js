@@ -20,7 +20,8 @@ function EditLoad(
           setLoads, 
           addLoad,
           setDrivers,
-          loadInfo
+          loadInfo,
+          backendURL
 
     }) {
   
@@ -49,7 +50,7 @@ function EditLoad(
 
       let handleSubmit = async (e) => {
         e.preventDefault()
-        let response = await fetch('http://localhost:4000/loads/edit/' + loadInfo._id, {
+        let response = await fetch(backendURL+ 'loads/edit/' + loadInfo._id, {
           method: 'PUT',
           body: JSON.stringify({
             driverInfo: editLoad.driverInfo,
@@ -71,7 +72,7 @@ function EditLoad(
           }
         })
         // if(truckInfo){
-        let changeDriverStatus = await fetch('http://localhost:4000/drivers/edit/'+ truckInfo._id, {
+        let changeDriverStatus = await fetch(backendURL + 'drivers/edit/'+ truckInfo._id, {
             method: 'PUT',
             body: JSON.stringify({
                 driver1: {

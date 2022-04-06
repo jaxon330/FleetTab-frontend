@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import Table from 'react-bootstrap/esm/Table';
 
-function ShowDetails({truckInfo, loadInfo, loads, setLoads, drivers, setDrivers}) {
+function ShowDetails({truckInfo, loadInfo, loads, setLoads, drivers, setDrivers, backendURL}) {
 
             // Deleter route
   let deleteOrder = async () => {
       if(loadInfo.driverInfo){
-            let changeDriverStatus = await fetch('http://localhost:4000/drivers/edit/'+ loadInfo.driverInfo._id, {
+            let changeDriverStatus = await fetch(backendURL + 'drivers/edit/'+ loadInfo.driverInfo._id, {
                 method: 'PUT',
                 body: JSON.stringify({
                     driver1: {
@@ -44,7 +44,7 @@ function ShowDetails({truckInfo, loadInfo, loads, setLoads, drivers, setDrivers}
             }
         }
 
-    let data = await fetch('http://localhost:4000/loads/' + loadInfo._id , {
+    let data = await fetch(backendURL+ 'loads/' + loadInfo._id , {
         method: 'DELETE',
         body: null,
         headers: {

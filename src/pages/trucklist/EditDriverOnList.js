@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-function EditDriverOnList({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID, truckInfo}) {
+function EditDriverOnList({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID, truckInfo, backendURL}) {
     const [driver, setDriver] = useState({
           driver1: {
             firstName: truckInfo && truckInfo.driver1.firstName,
@@ -45,7 +45,7 @@ function EditDriverOnList({ editWindow, closeEditWindow, showEditWindow, setEdit
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        let responce = await fetch('http://localhost:4000/drivers/edit/'+ driverID, {
+        let responce = await fetch(backendURL+ 'drivers/edit/'+ driverID, {
             method: 'PUT',
             body: JSON.stringify({
                 driver1: {

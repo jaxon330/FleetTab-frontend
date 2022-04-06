@@ -3,14 +3,14 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
-function Delivered({deliveredModal, closeDeliveredModal, loadInfo, truckInfo, setLoads, setDrivers, drivers, loads}) {
+function Delivered({deliveredModal, closeDeliveredModal, loadInfo, truckInfo, setLoads, setDrivers, drivers, loads, backendURL}) {
 
   const [file, setFile] = useState('')
   const [comment, setComment] = useState('')
 
   let orderDelivered = async (e) => {
     e.preventDefault()
-    let orderInfo = await fetch('http://localhost:4000/loads/edit/' + loadInfo._id, {
+    let orderInfo = await fetch(backendURL + 'loads/edit/' + loadInfo._id, {
       method: 'PUT',
       body: JSON.stringify({
         driverInfo: loadInfo.driverInfo,
@@ -32,7 +32,7 @@ function Delivered({deliveredModal, closeDeliveredModal, loadInfo, truckInfo, se
       }
     })
 
-    let changeDriverStatus = await fetch('http://localhost:4000/drivers/edit/'+ loadInfo.driverInfo._id, {
+    let changeDriverStatus = await fetch(backendURL + 'drivers/edit/'+ loadInfo.driverInfo._id, {
       method: 'PUT',
       body: JSON.stringify({
           driver1: {

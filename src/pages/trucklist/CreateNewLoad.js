@@ -19,7 +19,8 @@ function CreateNewLoad(
           loads, 
           setLoads, 
           addLoad,
-          setDrivers
+          setDrivers,
+          backendURL
     }) {
   
       const status = ['Ready', 'On Duty', 'In Transit', 'Off Duty']
@@ -47,7 +48,8 @@ function CreateNewLoad(
 
       let handleSubmit = async (e) => {
         e.preventDefault()
-        let response = await fetch('http://localhost:4000/loads', {
+        console.log(backendURL);
+        let response = await fetch(backendURL + 'loads', {
           method: 'POST',
           body: JSON.stringify({
             driverInfo: newLoad.driverInfo,
@@ -69,7 +71,7 @@ function CreateNewLoad(
           }
         })
         // if(truckInfo){
-        let changeDriverStatus = await fetch('http://localhost:4000/drivers/edit/'+ truckInfo._id, {
+        let changeDriverStatus = await fetch(backendURL+ 'drivers/edit/'+ truckInfo._id, {
             method: 'PUT',
             body: JSON.stringify({
                 driver1: {

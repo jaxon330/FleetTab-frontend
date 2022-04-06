@@ -9,7 +9,7 @@ import CreateDriver from './drivers/CreateDriver'
 import EditDriver from './drivers/EditDriver'
 import SidebarMenu from '../sidebarMenu/SidebarMenu'
 
-function Drivers({addDriver, drivers, setDrivers}) {
+function Drivers({addDriver, drivers, setDrivers, backendURL}) {
 
     // Driver id
     const [driverID, setDriverID] = useState()
@@ -52,7 +52,7 @@ function Drivers({addDriver, drivers, setDrivers}) {
 
         // Deleter route
   let deleteDriver = async (id) => {
-    let data = await fetch('http://localhost:4000/drivers/' + id , {
+    let data = await fetch(backendURL + 'drivers/' + id , {
         method: 'DELETE',
         body: null,
         headers: {
@@ -87,6 +87,7 @@ function Drivers({addDriver, drivers, setDrivers}) {
                     show={show}
                     setShow={setShow}
                     addDriver={addDriver}
+                    backendURL={backendURL}
                  />
                  {driverID === undefined ? null : 
                  <EditDriver 
@@ -97,6 +98,7 @@ function Drivers({addDriver, drivers, setDrivers}) {
                      driverID={driverID}
                      setDrivers={setDrivers}
                      drivers={drivers}
+                     backendURL={backendURL}
                  />
                 }
             </div>

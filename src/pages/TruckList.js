@@ -13,7 +13,7 @@ import Delivered from './trucklist/Delivered'
 
 function TruckList(
     {
-        addATruck, trucklist, setTrucklist, drivers, loads, setLoads, addLoad, setDrivers, setUsers
+        addATruck, trucklist, setTrucklist, drivers, loads, setLoads, addLoad, setDrivers, setUsers, backendURL
     }) {
 
     // Current date for header
@@ -28,7 +28,7 @@ function TruckList(
 
 
     let getLoads = async () => {
-        let loadsData = await fetch('http://localhost:4000/loads')
+        let loadsData = await fetch(backendURL + 'loads')
         let json = await loadsData.json()
         if (json) {
             setLoads(json)
@@ -203,6 +203,7 @@ function TruckList(
             truckInfo={truckInfo}
             setDrivers={setDrivers}
             truckID={truckID}
+            backendURL={backendURL}
         />
     }
         {truckInfo === undefined ? null :
@@ -215,6 +216,7 @@ function TruckList(
                 setDrivers={setDrivers}
                 drivers={drivers}
                 truckInfo={truckInfo}
+                backendURL={backendURL}
 
             />
         }
@@ -232,6 +234,7 @@ function TruckList(
             truckInfo={truckInfo}
             setDrivers={setDrivers} 
             loadInfo={loadID}
+            backendURL={backendURL}
         />
         ):null}
         <Delivered
@@ -243,6 +246,7 @@ function TruckList(
             loadInfo={loadID} 
             deliveredModal={deliveredModal}
             closeDeliveredModal={closeDeliveredModal}
+            backendURL={backendURL}
         />
      
 
@@ -440,6 +444,7 @@ function TruckList(
                 setLoads={setLoads} 
                 drivers={drivers}
                 setDrivers={setDrivers}
+                backendURL={backendURL}
                 />
             </div> 
         </div>

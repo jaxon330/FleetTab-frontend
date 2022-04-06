@@ -37,7 +37,7 @@ function Login({users, setUsers}) {
     if (userData.status === 200) {
         navigate('/trucklist')
     } else {
-        errorMessage = 'Invalid username or password'
+        navigate('/login')
     }
    }
 
@@ -58,7 +58,6 @@ function Login({users, setUsers}) {
         <Form onSubmit={handleSubmit} >
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Username</Form.Label>
-                <p>{errorMessage}</p>
                 <Form.Control type="text" placeholder="Enter username" name='username' onChange={handleChange} />
 
             </Form.Group>

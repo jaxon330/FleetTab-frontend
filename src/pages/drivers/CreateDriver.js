@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-function CreateDriver({handleClose, handleShow, show, setShow, addDriver}) {
+function CreateDriver({handleClose, handleShow, show, setShow, addDriver, backendURL}) {
     const [newDriver, setNewDriver] = useState({
         driver1: {
             firstName: '',
@@ -34,8 +34,9 @@ function CreateDriver({handleClose, handleShow, show, setShow, addDriver}) {
     const goToDriversPage = () => navigate('/drivers')
 
     const handleSubmit = async (e) => {
+      console.log(backendURL);
         e.preventDefault()
-        let responce = await fetch('http://localhost:4000/drivers', {
+        let responce = await fetch(backendURL + 'drivers', {
             method: 'POST',
             body: JSON.stringify({
                 driver1: {

@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
-function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID}) {
+function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow, drivers, setDrivers, driverID, backendURL}) {
     const [driver, setDriver] = useState({
         driver1: {
             firstName: '',
@@ -32,7 +32,7 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
 
     
     useEffect(() => {
-        fetch('http://localhost:4000/drivers/'+ driverID)
+        fetch(backendURL + 'drivers/'+ driverID)
         .then((res) => res.json())
         .then((resJson) => {
             console.log(resJson);
@@ -46,7 +46,7 @@ function EditDriver({ editWindow, closeEditWindow, showEditWindow, setEditWindow
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        let responce = await fetch('http://localhost:4000/drivers/edit/'+ driverID, {
+        let responce = await fetch(backendURL + 'drivers/edit/'+ driverID, {
             method: 'PUT',
             body: JSON.stringify({
                 driver1: {
